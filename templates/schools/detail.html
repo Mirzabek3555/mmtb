@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ school.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">{{ school.name }}</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'schools:list' %}">Ta'lim muassasalari</a></li>
+                <li class="breadcrumb-item active">{{ school.name|truncatechars:40 }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-8" data-aos="fade-up">
+                {% if school.image %}
+                <img src="{{ school.image.url }}" alt="{{ school.name }}" class="img-fluid rounded-3 mb-4 w-100"
+                    style="max-height:400px;object-fit:cover;">
+                {% endif %}
+                <span class="school-type-badge mb-3 d-inline-block">{{ school.get_school_type_display }}</span>
+                <div class="school-content">{{ school.description|safe|default:"<p>Ma'lumot kiritilmagan.</p>" }}</div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="contact-form-card" style="position:sticky;top:90px;" data-aos="fade-left">
+                    <h4><i class="fas fa-info-circle me-2 text-success"></i>Asosiy ma'lumotlar</h4>
+                    <div class="school-meta">
+                        {% if school.number %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-hashtag"></i></div>
+                            <div class="text"><small>Tartib raqami</small><span>{{ school.number }}-son</span></div>
+                        </div>{% endif %}
+                        {% if school.director_name %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-user-tie"></i></div>
+                            <div class="text"><small>Direktor</small><span>{{ school.director_name }}</span></div>
+                        </div>{% endif %}
+                        {% if school.director_phone %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-phone"></i></div>
+                            <div class="text"><small>Direktor telefoni</small><span>{{ school.director_phone }}</span>
+                            </div>
+                        </div>{% endif %}
+                        <div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-map-marker-alt"></i></div>
+                            <div class="text"><small>Manzil</small><span>{{ school.address }}</span></div>
+                        </div>
+                        {% if school.phone %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-phone"></i></div>
+                            <div class="text"><small>Telefon</small><a href="tel:{{ school.phone }}">{{ school.phone
+                                    }}</a></div>
+                        </div>{% endif %}
+                        {% if school.email %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-envelope"></i></div>
+                            <div class="text"><small>Email</small><a href="mailto:{{ school.email }}">{{ school.email
+                                    }}</a></div>
+                        </div>{% endif %}
+                        {% if school.student_count %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-user-graduate"></i></div>
+                            <div class="text"><small>O'quvchilar</small><span>{{ school.student_count }} nafar</span>
+                            </div>
+                        </div>{% endif %}
+                        {% if school.teacher_count %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-chalkboard-teacher"></i></div>
+                            <div class="text"><small>O'qituvchilar</small><span>{{ school.teacher_count }} nafar</span>
+                            </div>
+                        </div>{% endif %}
+                        {% if school.founded_year %}<div class="contact-item">
+                            <div class="icon" style="background:var(--bg-light);color:var(--primary);"><i
+                                    class="fas fa-calendar-alt"></i></div>
+                            <div class="text"><small>Ta'sis yili</small><span>{{ school.founded_year }}-yil</span></div>
+                        </div>{% endif %}
+                    </div>
+                    <a href="{% url 'schools:list' %}" class="btn-green w-100 mt-3 justify-content-center d-flex">
+                        <i class="fas fa-arrow-left me-2"></i>Qaytish
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

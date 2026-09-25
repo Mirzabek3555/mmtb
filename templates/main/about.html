@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bo'lim haqida{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Bo'lim Haqida</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">Bo'lim haqida</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="img-fluid"
+                    style="max-width:350px;margin:0 auto;display:block;">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <span class="section-tag"><i class="fas fa-info-circle me-1"></i>Tashkilot</span>
+                <h2 class="section-title mt-3">Tuproqqal'a Tuman Maktabgacha va Maktab Ta'limi Bo'limi</h2>
+                <div class="section-divider" style="margin-left:0;"></div>
+                {% if settings and settings.about_text %}
+                <div style="font-size:0.95rem;line-height:1.8;color:var(--text-body);">{{ settings.about_text|safe }}
+                </div>
+                {% else %}
+                <p style="font-size:0.95rem;line-height:1.8;color:var(--text-body);">
+                    Tuproqqal'a tuman maktabgacha va maktab ta'limi bo'limi Qashqadaryo viloyati Tuproqqal'a tumanida
+                    ta'lim sohasini boshqarish va rivojlantirish uchun mas'ul davlat tashkilotidir.
+                </p>
+                <p style="font-size:0.95rem;line-height:1.8;color:var(--text-body);">
+                    Bo'limning asosiy vazifalari: tuman miqyosida ta'lim sifatini nazorat qilish, pedagoglar malakasini
+                    oshirish, yangi ta'lim standartlarini joriy etish va bolalar kamolotini ta'minlashdan iborat.
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            {% if statistics %}
+            {% for stat in statistics %}
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="stat-item">
+                    <div class="icon-wrap"><i class="{{ stat.icon }}"></i></div>
+                    <span class="count" data-count="{{ stat.value }}">{{ stat.value }}</span>
+                    <span class="label">{{ stat.title }}</span>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-6 col-md-3" data-aos="fade-up">
+                <div class="stat-item">
+                    <div class="icon-wrap"><i class="fas fa-school"></i></div><span class="count"
+                        data-count="40">40</span><span class="label">Ta'lim muassasalari</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-item">
+                    <div class="icon-wrap"><i class="fas fa-child"></i></div><span class="count"
+                        data-count="12000">12000</span><span class="label">O'quvchi</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-item">
+                    <div class="icon-wrap"><i class="fas fa-chalkboard-teacher"></i></div><span class="count"
+                        data-count="850">850</span><span class="label">Pedagoglar</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-item">
+                    <div class="icon-wrap"><i class="fas fa-award"></i></div><span class="count"
+                        data-count="15">15</span><span class="label">Yillik tajriba</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Management -->
+{% if management %}
+<section class="section section-light">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-tag"><i class="fas fa-users me-1"></i>Rahbariyat</span>
+            <h2 class="section-title">Bo'lim rahbariyati</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            {% for person in management %}
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="staff-card">
+                    {% if person.photo %}<img src="{{ person.photo.url }}" alt="{{ person.full_name }}"
+                        class="staff-photo">
+                    {% else %}<div class="staff-avatar">{{ person.full_name|first }}</div>{% endif %}
+                    <div class="card-body">
+                        <h5>{{ person.full_name }}</h5>
+                        <span class="position-badge">{{ person.get_position_display_name }}</span>
+                        <div class="staff-contact mt-2">
+                            {% if person.phone %}<a href="tel:{{ person.phone }}"><i class="fas fa-phone"></i>{{
+                                person.phone }}</a>{% endif %}
+                            {% if person.reception_hours %}<p
+                                style="font-size:0.78rem;color:var(--text-muted);margin-top:3px;"><i
+                                    class="fas fa-clock me-1"></i>{{ person.reception_hours }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

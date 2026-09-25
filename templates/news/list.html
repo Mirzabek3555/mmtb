@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Yangiliklar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Yangiliklar va E'lonlar</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">Yangiliklar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <!-- Filter -->
+        <div class="d-flex flex-wrap gap-2 mb-4" data-aos="fade-up">
+            <a href="{% url 'news:list' %}" class="filter-tag {% if not selected_category %}active{% endif %}">
+                <i class="fas fa-th me-1"></i>Barchasi
+            </a>
+            {% for cat in categories %}
+            <a href="?category={{ cat.slug }}"
+                class="filter-tag {% if selected_category.slug == cat.slug %}active{% endif %}">
+                {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="row g-4">
+            {% if news_list %}
+            {% for item in news_list %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+                <div class="news-card">
+                    <div class="card-img-wrap">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="card-img">
+                        {% else %}
+                        <div class="card-img d-flex align-items-center justify-content-center"
+                            style="background:var(--bg-light);">
+                            <i class="fas fa-newspaper"
+                                style="font-size:3rem;color:var(--primary-light);opacity:0.4;"></i>
+                        </div>
+                        {% endif %}
+                        {% if item.category %}
+                        <span class="card-category">{{ item.category.name }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="card-date">
+                            <i class="far fa-calendar-alt"></i>{{ item.created_at|date:"d-M Y" }}
+                            <span class="ms-auto"><i class="far fa-eye me-1"></i>{{ item.views }}</span>
+                        </div>
+                        <h4>{{ item.title }}</h4>
+                        <p>{{ item.short_description|truncatechars:110 }}</p>
+                        <a href="{{ item.get_absolute_url }}" class="read-more">
+                            Batafsil o'qish <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-newspaper fa-4x text-muted mb-4 d-block" style="opacity:0.3;"></i>
+                <h5 class="text-muted">Yangiliklar topilmadi</h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

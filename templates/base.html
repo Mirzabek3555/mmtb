@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tuproqqal'a tuman maktabgacha va maktab ta'limi bo'limi rasmiy veb-sayti">
+  <meta name="keywords" content="Tuproqqala, maktab, ta'lim, Qashqadaryo">
+  <title>{% block title %}Tuproqqal'a Tuman MTB{% endblock %} | Rasmiy Sayt</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Fancybox -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="pageLoader">
+  <img src="{% static 'images/logo.png' %}" alt="Logo" height="90" class="loader-logo">
+</div>
+
+<!-- Top Bar -->
+<div class="topbar d-none d-md-block">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center py-0">
+      <div class="d-flex gap-4">
+        <span class="top-item"><i class="fas fa-phone-alt"></i>{% if settings %}{{ settings.phone }}{% else %}+998 65 000-00-00{% endif %}</span>
+        <span class="top-item"><i class="fas fa-envelope"></i>{% if settings %}{{ settings.email }}{% else %}info@tuproqqala-talim.uz{% endif %}</span>
+      </div>
+      <div class="d-flex gap-4">
+        <span class="top-item"><i class="fas fa-clock"></i>{% if settings %}{{ settings.working_hours }}{% else %}Dushanba-Juma: 9:00 - 18:00{% endif %}</span>
+        <div class="d-flex gap-2">
+          {% if settings and settings.telegram %}<a href="{{ settings.telegram }}" target="_blank"><i class="fab fa-telegram"></i></a>{% endif %}
+          {% if settings and settings.facebook %}<a href="{{ settings.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg" id="mainNavbar">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'main:index' %}">
+      <img src="{% static 'images/logo.png' %}" alt="Logo">
+      <div class="brand-text">
+        <span class="brand-name">Tuproqqal'a Tuman MTB</span>
+        <span class="brand-subtitle">Maktabgacha va Maktab Ta'limi Bo'limi</span>
+      </div>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'main:index' %}">
+            <i class="fas fa-home me-1 d-lg-none"></i>Bosh sahifa
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="fas fa-building me-1 d-lg-none"></i>Tashkilot
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'main:about' %}"><i class="fas fa-info-circle me-2 text-success"></i>Bo'lim haqida</a></li>
+            <li><a class="dropdown-item" href="{% url 'staff:list' %}"><i class="fas fa-users me-2 text-success"></i>Rahbariyat va xodimlar</a></li>
+            <li><a class="dropdown-item" href="{% url 'main:documents' %}"><i class="fas fa-file-alt me-2 text-success"></i>Hujjatlar</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'yangiliklar' in request.path %}active{% endif %}" href="{% url 'news:list' %}">
+            <i class="fas fa-newspaper me-1 d-lg-none"></i>Yangiliklar
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'maktablar' in request.path %}active{% endif %}" href="{% url 'schools:list' %}">
+            <i class="fas fa-school me-1 d-lg-none"></i>Ta'lim muassasalari
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if 'galereya' in request.path %}active{% endif %}" href="{% url 'gallery:gallery' %}">
+            <i class="fas fa-images me-1 d-lg-none"></i>Galereya
+          </a>
+        </li>
+        <li class="nav-item ms-lg-3">
+          <a class="btn-green py-2 px-4 rounded-pill" href="{% url 'contacts:contact' %}" style="font-size:0.85rem;font-weight:600;text-decoration:none;">
+            <i class="fas fa-paper-plane me-1"></i>Murojaat
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Messages -->
+{% if messages %}
+<div class="container mt-3">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius:var(--radius-md);">
+    <i class="fas fa-check-circle me-2"></i>{{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Main Content -->
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" height="60">
+          <p class="mt-3">Tuproqqal'a tuman maktabgacha va maktab ta'limi bo'limi — sifatli ta'lim uchun mas'ul tashkilot.</p>
+        </div>
+        <div class="footer-social">
+          {% if settings and settings.telegram %}<a href="{{ settings.telegram }}" class="social-btn tg" target="_blank"><i class="fab fa-telegram"></i></a>{% endif %}
+          {% if settings and settings.facebook %}<a href="{{ settings.facebook }}" class="social-btn fb" target="_blank"><i class="fab fa-facebook"></i></a>{% endif %}
+          {% if settings and settings.instagram %}<a href="{{ settings.instagram }}" class="social-btn ig" target="_blank"><i class="fab fa-instagram"></i></a>{% endif %}
+          {% if settings and settings.youtube %}<a href="{{ settings.youtube }}" class="social-btn yt" target="_blank"><i class="fab fa-youtube"></i></a>{% endif %}
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-4">
+        <h6>Sahifalar</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'main:index' %}"><i class="fas fa-chevron-right"></i>Bosh sahifa</a></li>
+          <li><a href="{% url 'main:about' %}"><i class="fas fa-chevron-right"></i>Bo'lim haqida</a></li>
+          <li><a href="{% url 'news:list' %}"><i class="fas fa-chevron-right"></i>Yangiliklar</a></li>
+          <li><a href="{% url 'schools:list' %}"><i class="fas fa-chevron-right"></i>Ta'lim muassasalari</a></li>
+          <li><a href="{% url 'gallery:gallery' %}"><i class="fas fa-chevron-right"></i>Galereya</a></li>
+          <li><a href="{% url 'contacts:contact' %}"><i class="fas fa-chevron-right"></i>Murojaat</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-md-4">
+        <h6>Xizmatlar</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'schools:list' %}?type=maktabgacha"><i class="fas fa-chevron-right"></i>MTM ro'yxati</a></li>
+          <li><a href="{% url 'schools:list' %}?type=maktab"><i class="fas fa-chevron-right"></i>Maktablar ro'yxati</a></li>
+          <li><a href="{% url 'main:documents' %}"><i class="fas fa-chevron-right"></i>Hujjatlar</a></li>
+          <li><a href="{% url 'staff:list' %}"><i class="fas fa-chevron-right"></i>Xodimlar</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-4 col-md-4">
+        <h6>Bog'lanish</h6>
+        <div class="footer-contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{% if settings %}{{ settings.address }}{% else %}Qashqadaryo viloyati, Tuproqqal'a tumani{% endif %}</span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-phone"></i>
+          <a href="tel:{% if settings %}{{ settings.phone }}{% endif %}" style="color:rgba(255,255,255,0.8);text-decoration:none;">
+            {% if settings %}{{ settings.phone }}{% else %}+998 65 000-00-00{% endif %}
+          </a>
+        </div>
+        {% if settings and settings.phone2 %}
+        <div class="footer-contact-item">
+          <i class="fas fa-phone"></i>
+          <a href="tel:{{ settings.phone2 }}" style="color:rgba(255,255,255,0.8);text-decoration:none;">{{ settings.phone2 }}</a>
+        </div>
+        {% endif %}
+        <div class="footer-contact-item">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:{% if settings %}{{ settings.email }}{% endif %}" style="color:rgba(255,255,255,0.8);text-decoration:none;">
+            {% if settings %}{{ settings.email }}{% else %}info@tuproqqala-talim.uz{% endif %}
+          </a>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-clock"></i>
+          <span>{% if settings %}{{ settings.working_hours }}{% else %}Dushanba-Juma: 9:00-18:00{% endif %}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <p>© {% now "Y" %} Tuproqqal'a Tuman Maktabgacha va Maktab Ta'limi Bo'limi. Barcha huquqlar himoyalangan.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to Top -->
+<button class="scrolltop" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AOS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<!-- Fancybox -->
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<!-- Counter Up -->
+<script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
+
+<script>
+  // Init AOS
+  AOS.init({ duration: 700, once: true, offset: 60 });
+
+  // Page Loader
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      document.getElementById('pageLoader').classList.add('loaded');
+    }, 800);
+  });
+
+  // Navbar scroll
+  window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    const scrollBtn = document.getElementById('scrollTop');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+      scrollBtn.classList.add('show');
+    } else {
+      navbar.classList.remove('scrolled');
+      scrollBtn.classList.remove('show');
+    }
+  });
+
+  // Fancybox
+  Fancybox.bind('[data-fancybox]', {});
+
+  // Counter animation
+  function animateCounters() {
+    document.querySelectorAll('[data-count]').forEach(function(el) {
+      const target = parseInt(el.dataset.count);
+      const countUp = new CountUp.CountUp(el, target, { duration: 2.5, separator: ',' });
+      if (!countUp.error) countUp.start();
+    });
+  }
+
+  // Intersection Observer for counters
+  const statsSection = document.querySelector('.stats-section');
+  if (statsSection) {
+    const observer = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        animateCounters();
+        observer.disconnect();
+      }
+    }, { threshold: 0.3 });
+    observer.observe(statsSection);
+  }
+
+  // Scroll animations
+  const animElements = document.querySelectorAll('.animate-on-scroll');
+  const scrollObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  animElements.forEach(function(el) { scrollObserver.observe(el); });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

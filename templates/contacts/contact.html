@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Murojaat{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Biz bilan bog'laning</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">Murojaat</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-5" data-aos="fade-right">
+                <div class="contact-info-card">
+                    <h4><i class="fas fa-address-book me-2"></i>Aloqa ma'lumotlari</h4>
+
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="text">
+                            <small>Manzil</small>
+                            <span>
+                                {% if settings %}
+                                {{ settings.address }}
+                                {% else %}
+                                Qashqadaryo viloyati, Tuproqqal'a tumani
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-phone-alt"></i></div>
+                        <div class="text">
+                            <small>Telefon raqam</small>
+                            <a href="tel:{% if settings %}{{ settings.phone }}{% endif %}">
+                                {% if settings %}
+                                {{ settings.phone }}
+                                {% else %}
+                                +998 65 000-00-00
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+
+                    {% if settings and settings.phone2 %}
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-phone"></i></div>
+                        <div class="text">
+                            <small>Qo'shimcha telefon</small>
+                            <a href="tel:{{ settings.phone2 }}">{{ settings.phone2 }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-envelope"></i></div>
+                        <div class="text">
+                            <small>Elektron pochta</small>
+                            <a href="mailto:{% if settings %}{{ settings.email }}{% endif %}">
+                                {% if settings %}
+                                {{ settings.email }}
+                                {% else %}
+                                info@tuproqqala-talim.uz
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-clock"></i></div>
+                        <div class="text">
+                            <small>Ish vaqti</small>
+                            <span>
+                                {% if settings %}
+                                {{ settings.working_hours }}
+                                {% else %}
+                                Dushanba-Juma: 9:00 - 18:00
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,0.2);">
+                        <p style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-bottom:12px;">Ijtimoiy tarmoqlar:
+                        </p>
+                        <div class="d-flex gap-2">
+                            {% if settings and settings.telegram %}
+                            <a href="{{ settings.telegram }}" class="social-btn tg" target="_blank">
+                                <i class="fab fa-telegram"></i>
+                            </a>
+                            {% endif %}
+
+                            {% if settings and settings.facebook %}
+                            <a href="{{ settings.facebook }}" class="social-btn fb" target="_blank">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            {% endif %}
+
+                            {% if settings and settings.instagram %}
+                            <a href="{{ settings.instagram }}" class="social-btn ig" target="_blank">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            {% endif %}
+
+                            {% if settings and settings.youtube %}
+                            <a href="{{ settings.youtube }}" class="social-btn yt" target="_blank">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="contact-form-card">
+                    <h4><i class="fas fa-paper-plane me-2 text-success"></i>Murojaat yuborish</h4>
+                    <p class="text-muted mb-4" style="font-size:0.88rem;">Quyidagi formani to'ldiring va biz siz bilan
+                        tez orada bog'lanamiz.</p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">F.I.Sh. *</label>
+                                {{ form.full_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Telefon raqam *</label>
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Elektron pochta</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Mavzu *</label>
+                                {{ form.subject }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Xabar *</label>
+                                {{ form.message }}
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-green" style="padding:13px 35px;">
+                                    <i class="fas fa-paper-plane me-2"></i>Yuborish
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map placeholder -->
+        <div class="mt-5 rounded-3 overflow-hidden" data-aos="fade-up"
+            style="height:350px;background:var(--bg-light);display:flex;align-items:center;justify-content:center;border:1px solid var(--border);">
+            <div class="text-center">
+                <i class="fas fa-map-marked-alt fa-3x"
+                    style="color:var(--primary-light);opacity:0.5;margin-bottom:12px;display:block;"></i>
+                <p class="text-muted">Xaritani ko'rish uchun Google Maps'ni ulang</p>
+                <a href="https://maps.google.com/?q=Tuproqqala+Qashqadaryo" target="_blank" class="btn-green mt-2">
+                    <i class="fas fa-external-link-alt me-2"></i>Google Maps'da ko'rish
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

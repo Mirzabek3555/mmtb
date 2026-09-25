@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Hujjatlar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Hujjatlar</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">Hujjatlar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <!-- Category filter -->
+        <div class="d-flex flex-wrap gap-2 mb-5" data-aos="fade-up">
+            <a href="{% url 'main:documents' %}"
+                class="filter-tag {% if not selected_category %}active{% endif %}">Barchasi</a>
+            {% for val, name in categories %}
+            <a href="?category={{ val }}" class="filter-tag {% if selected_category == val %}active{% endif %}">{{ name
+                }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="row g-3">
+            {% if documents %}
+            {% for doc in documents %}
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+                <div class="news-card flex-row" style="flex-direction:row;align-items:center;padding:20px;gap:18px;">
+                    <div
+                        style="width:55px;height:55px;background:var(--bg-light);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        {% if '.pdf' in doc.file.name %}
+                        <i class="fas fa-file-pdf" style="color:#e74c3c;font-size:1.6rem;"></i>
+                        {% elif '.docx' in doc.file.name or '.doc' in doc.file.name %}
+                        <i class="fas fa-file-word" style="color:#2980b9;font-size:1.6rem;"></i>
+                        {% else %}
+                        <i class="fas fa-file-alt" style="color:var(--primary);font-size:1.6rem;"></i>
+                        {% endif %}
+                    </div>
+                    <div style="flex:1;">
+                        <h5 style="font-size:0.95rem;font-weight:700;margin-bottom:4px;color:var(--text-dark);">{{
+                            doc.title }}</h5>
+                        <div class="d-flex align-items-center gap-3">
+                            <span style="font-size:0.75rem;color:var(--text-muted);">{{ doc.get_category_display
+                                }}</span>
+                            <span style="font-size:0.75rem;color:var(--text-muted);"><i
+                                    class="far fa-calendar-alt me-1"></i>{{ doc.created_at|date:"d-M Y" }}</span>
+                        </div>
+                    </div>
+                    <a href="{{ doc.file.url }}" class="btn-green"
+                        style="padding:8px 18px;font-size:0.82rem;flex-shrink:0;" target="_blank">
+                        <i class="fas fa-download me-1"></i>Yuklab olish
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-folder-open fa-4x text-muted mb-3 d-block" style="opacity:0.3;"></i>
+                <h5 class="text-muted">Hujjatlar topilmadi</h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

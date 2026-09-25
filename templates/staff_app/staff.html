@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Xodimlar{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Rahbariyat va Xodimlar</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">Xodimlar</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <!-- Management -->
+        {% if management %}
+        <div class="section-header text-start mb-4" data-aos="fade-up">
+            <span class="section-tag"><i class="fas fa-star me-1"></i>Rahbariyat</span>
+            <h2 class="section-title mt-2">Bo'lim rahbariyati</h2>
+            <div class="section-divider" style="margin-left:0;"></div>
+        </div>
+        <div class="row g-4 mb-5">
+            {% for person in management %}
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}00">
+                <div class="staff-card">
+                    {% if person.photo %}
+                    <img src="{{ person.photo.url }}" alt="{{ person.full_name }}" class="staff-photo">
+                    {% else %}
+                    <div class="staff-avatar">{{ person.full_name|first }}</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5>{{ person.full_name }}</h5>
+                        <span class="position-badge">{{ person.get_position_display_name }}</span>
+                        <div class="staff-contact mt-2">
+                            {% if person.phone %}<a href="tel:{{ person.phone }}"><i class="fas fa-phone"></i>{{
+                                person.phone }}</a>{% endif %}
+                            {% if person.email %}<a href="mailto:{{ person.email }}"><i class="fas fa-envelope"></i>{{
+                                person.email }}</a>{% endif %}
+                            {% if person.reception_hours %}<p class="text-muted mt-1" style="font-size:0.78rem;"><i
+                                    class="fas fa-clock me-1"></i>{{ person.reception_hours }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Staff -->
+        {% if staff %}
+        <div class="section-header text-start mb-4" data-aos="fade-up">
+            <span class="section-tag"><i class="fas fa-users me-1"></i>Mutaxassislar</span>
+            <h2 class="section-title mt-2">Bo'lim xodimlari</h2>
+            <div class="section-divider" style="margin-left:0;"></div>
+        </div>
+
+        <!-- Department filter -->
+        <div class="d-flex flex-wrap gap-2 mb-4" data-aos="fade-up">
+            <a href="{% url 'staff:list' %}" class="filter-tag {% if not selected_dept %}active{% endif %}">Barchasi</a>
+            {% for dept in departments %}
+            <a href="?department={{ dept.id }}"
+                class="filter-tag {% if selected_dept == dept.id|stringformat:'s' %}active{% endif %}">{{ dept.name
+                }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="row g-4">
+            {% for person in staff %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+                <div class="staff-card" style="text-align:left;flex-direction:row;padding:20px;gap:15px;">
+                    {% if person.photo %}
+                    <img src="{{ person.photo.url }}" alt="{{ person.full_name }}"
+                        style="width:65px;height:65px;border-radius:50%;object-fit:cover;flex-shrink:0;border:3px solid var(--bg-light);">
+                    {% else %}
+                    <div
+                        style="width:65px;height:65px;border-radius:50%;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:700;flex-shrink:0;">
+                        {{ person.full_name|first }}
+                    </div>
+                    {% endif %}
+                    <div style="flex:1;">
+                        <h5 style="font-size:0.95rem;margin-bottom:4px;">{{ person.full_name }}</h5>
+                        <span class="position-badge" style="font-size:0.72rem;">{{ person.get_position_display_name
+                            }}</span>
+                        <div class="staff-contact" style="text-align:left;margin-top:8px;">
+                            {% if person.phone %}<a href="tel:{{ person.phone }}" style="justify-content:flex-start;"><i
+                                    class="fas fa-phone"></i>{{ person.phone }}</a>{% endif %}
+                            {% if person.department %}<p
+                                style="font-size:0.76rem;color:var(--text-muted);margin:3px 0 0;"><i
+                                    class="fas fa-building me-1"></i>{{ person.department.name }}</p>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if not management and not staff %}
+        <div class="text-center py-5">
+            <i class="fas fa-users fa-4x text-muted mb-3 d-block" style="opacity:0.3;"></i>
+            <h5 class="text-muted">Ma'lumotlar topilmadi</h5>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .staff-card {
+        flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+        .staff-card.row-card {
+            flex-direction: row !important;
+        }
+    }
+</style>
+{% endblock %}

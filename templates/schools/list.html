@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ta'lim muassasalari{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Ta'lim Muassasalari</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">Ta'lim muassasalari</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <!-- Summary Stats -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="school-card text-center">
+                    <div class="school-icon mx-auto"><i class="fas fa-school"></i></div>
+                    <h5>{{ schools|length }}</h5>
+                    <p class="text-muted" style="font-size:0.85rem;">Jami muassasalar</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="school-card text-center">
+                    <div class="school-icon mx-auto"><i class="fas fa-user-graduate"></i></div>
+                    <h5>{{ total_students|default:"0" }}</h5>
+                    <p class="text-muted" style="font-size:0.85rem;">Jami o'quvchilar</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="school-card text-center">
+                    <div class="school-icon mx-auto"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <h5>{{ total_teachers|default:"0" }}</h5>
+                    <p class="text-muted" style="font-size:0.85rem;">Jami o'qituvchilar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="d-flex flex-wrap gap-2 mb-4" data-aos="fade-up">
+            <a href="{% url 'schools:list' %}"
+                class="filter-tag {% if not selected_type %}active{% endif %}">Barchasi</a>
+            {% for val, name in type_choices %}
+            <a href="?type={{ val }}" class="filter-tag {% if selected_type == val %}active{% endif %}">{{ name }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="row g-4">
+            {% if schools %}
+            {% for school in schools %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
+                <div class="school-card h-100">
+                    {% if school.image %}
+                    <img src="{{ school.image.url }}" alt="{{ school.name }}" class="img-fluid rounded-2 mb-3"
+                        style="height:160px;width:100%;object-fit:cover;">
+                    {% else %}
+                    <div class="school-icon"><i class="fas fa-school"></i></div>
+                    {% endif %}
+                    <span class="school-type-badge">{{ school.get_school_type_display }}</span>
+                    <h5>{% if school.number %}{{ school.number }}-son {% endif %}{{ school.name }}</h5>
+                    <div class="school-meta">
+                        {% if school.director_name %}
+                        <span><i class="fas fa-user-tie"></i>{{ school.director_name }}</span>
+                        {% endif %}
+                        <span><i class="fas fa-map-marker-alt"></i>{{ school.address }}</span>
+                        {% if school.phone %}
+                        <span><i class="fas fa-phone"></i>{{ school.phone }}</span>
+                        {% endif %}
+                        {% if school.student_count %}
+                        <span><i class="fas fa-users"></i>{{ school.student_count }} o'quvchi</span>
+                        {% endif %}
+                        {% if school.teacher_count %}
+                        <span><i class="fas fa-chalkboard-teacher"></i>{{ school.teacher_count }} pedagog</span>
+                        {% endif %}
+                    </div>
+                    <a href="{{ school.get_absolute_url }}" class="read-more mt-3">
+                        Batafsil <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-school fa-4x text-muted mb-3 d-block" style="opacity:0.3;"></i>
+                <h5 class="text-muted">Muassasalar topilmadi</h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
