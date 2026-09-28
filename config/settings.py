@@ -1,16 +1,42 @@
 """
 Django settings for Tuproqqal'a Tuman Maktabgacha va Maktab Ta'limi Bo'limi
+(Render uchun moslashtirilgan)
 """
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-tuproqqala-talim-bolimi-secret-key-2024'
+# Render o'zi RENDER=true muhit o'zgaruvchisini qo'yadi
+ON_RENDER = 'RENDER' in os.environ
 
-DEBUG = True
+# Render'da SECRET_KEY ni Environment bo'limida belgilang.
+# Lokal ishlashda pastdagi zaxira kalit ishlatiladi.
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-tuproqqala-talim-bolimi-secret-key-2024',
+)
 
-ALLOWED_HOSTS = ['*']
+# Render'da avtomatik DEBUG=False, lokal kompyuterda DEBUG=True.
+# Xohlasangiz Environment'da DEBUG=True/False deb majburlash mumkin.
+DEBUG = os.environ.get('DEBUG', str(not ON_RENDER)).lower() == 'true'
+
+ALLOWED_HOSTS = [
+    'tuproqqalatumanmmtb.uz',
+    'www.tuproqqalatumanmmtb.uz',
+    'mmtb.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://tuproqqalatumanmmtb.uz',
+    'https://www.tuproqqalatumanmmtb.uz',
+    'https://mmtb.onrender.com',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,6 +59,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # statik fayllar uchun
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,10 +88,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Doimiy disk ulasangiz (masalan /var/data), Render Environment'ga
+# DATA_DIR=/var/data qo'shing. Aks holda loyiha papkasi ishlatiladi
+# (Render'da bunday holda ma'lumotlar har deploy'da o'chib ketadi).
+DATA_DIR = Path(os.environ.get('DATA_DIR', BASE_DIR))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATA_DIR / 'db.sqlite3',
     }
 }
 
@@ -75,19 +107,38 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-LANGUAGE_CODE = 'uz-uz'
+LANGUAGE_CODE = 'uz'
 TIME_ZONE = 'Asia/Tashkent'
 USE_I18N = True
 USE_TZ = True
 
+# Statik fayllar
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+# static/ papkasi bo'lmasa ogohlantirish chiqmasligi uchun shart qo'yildi
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
+
+# Media fayllar (yuklangan rasmlar)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = DATA_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Render HTTPS'ni proxy orqali beradi
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # CKEditor
 CKEDITOR_UPLOAD_PATH = 'uploads/'
