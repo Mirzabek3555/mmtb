@@ -19,15 +19,9 @@ SECRET_KEY = os.environ.get(
 
 # Render'da avtomatik DEBUG=False, lokal kompyuterda DEBUG=True.
 # Xohlasangiz Environment'da DEBUG=True/False deb majburlash mumkin.
-DEBUG = os.environ.get('DEBUG', str(not ON_RENDER)).lower() == 'true'
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    'tuproqqalatumanmmtb.uz',
-    'www.tuproqqalatumanmmtb.uz',
-    'mmtb.onrender.com',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ['tuproqqalatumanmmtb.uz', 'www.tuproqqalatumanmmtb.uz', '192.168.1.39']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
