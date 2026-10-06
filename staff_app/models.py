@@ -1,6 +1,19 @@
 from django.db import models
 
 
+class Position(models.Model):
+    name = models.CharField("Lavozim nomi", max_length=200)
+    order = models.PositiveIntegerField("Tartib", default=0)
+
+    class Meta:
+        verbose_name = "Lavozim"
+        verbose_name_plural = "Lavozimlar"
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+
 class Department(models.Model):
     name = models.CharField("Bo'lim nomi", max_length=200)
     order = models.PositiveIntegerField("Tartib", default=0)
@@ -15,17 +28,9 @@ class Department(models.Model):
 
 
 class Staff(models.Model):
-    POSITION_CHOICES = [
-        ('rahbar', 'Bo\'lim boshlig\'i'),
-        ('bosh_mutaxassis', 'Bosh mutaxassis'),
-        ('mutaxassis', 'Mutaxassis'),
-        ('inspektor', 'Inspektor'),
-        ('metodist', 'Metodist'),
-        ('boshqa', 'Boshqa'),
-    ]
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Bo'lim")
     full_name = models.CharField("F.I.Sh.", max_length=200)
-    position = models.CharField("Lavozim", max_length=100, choices=POSITION_CHOICES, default='mutaxassis')
+    position = models.ForeignKey(Position, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Lavozim")
     position_custom = models.CharField("Maxsus lavozim", max_length=200, blank=True)
     phone = models.CharField("Telefon", max_length=50, blank=True)
     email = models.EmailField("Email", blank=True)
@@ -46,4 +51,4 @@ class Staff(models.Model):
     def get_position_display_name(self):
         if self.position_custom:
             return self.position_custom
-        return self.get_position_display()
+        return self.position.name if self.position else "Lavozim kiritilmagan"

@@ -73,7 +73,8 @@
         <div style="overflow:hidden;flex:1;">
             <span class="announcement-text">
                 {% for ann in announcements %}
-                📌 {{ ann.title }} &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                📌 <a href="{% url 'main:announcement_detail' ann.id %}" style="color:inherit;text-decoration:none;">{{
+                    ann.title }}</a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
                 {% endfor %}
             </span>
         </div>

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from news.models import News
 from main.models import Statistics, Announcement, Document, SiteSettings
 from schools.models import School
@@ -43,3 +43,12 @@ def documents(request):
         'categories': Document.CATEGORY_CHOICES,
     }
     return render(request, 'main/documents.html', context)
+
+
+def announcement_detail(request, pk):
+    announcement = get_object_or_404(Announcement, pk=pk, is_active=True)
+    context = {
+        'settings': get_settings(),
+        'announcement': announcement,
+    }
+    return render(request, 'main/announcement_detail.html', context)

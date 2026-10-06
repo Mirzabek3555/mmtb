@@ -38,14 +38,17 @@
             {% if images %}
             {% for item in images %}
             <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0 }}0">
-                <div class="gallery-item">
-                    <a href="{{ item.image.url }}" data-fancybox="gallery" data-caption="{{ item.title }}">
-                        <img src="{{ item.image.url }}" alt="{{ item.title }}">
-                        <div class="overlay">
-                            <i class="fas fa-search-plus"></i>
-                            <span>{{ item.title }}</span>
-                        </div>
-                    </a>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="gallery-item">
+                        <a href="{{ item.image.url }}" data-fancybox="gallery" data-caption="{{ item.title }}">
+                            <img src="{{ item.image.url }}" alt="{{ item.title }}">
+                            <div class="overlay">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <span style="font-size:0.9rem; font-weight:600; color:var(--text-dark); text-align:center;">{{
+                        item.title }}</span>
                 </div>
             </div>
             {% endfor %}

@@ -1,9 +1,15 @@
 from django.contrib import admin
-from .models import Department, Staff
+from .models import Department, Staff, Position
 
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ['name', 'order']
+    list_editable = ['order']
+
+
+@admin.register(Position)
+class PositionAdmin(admin.ModelAdmin):
     list_display = ['name', 'order']
     list_editable = ['order']
 

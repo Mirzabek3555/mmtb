@@ -21,7 +21,7 @@ SECRET_KEY = os.environ.get(
 # Xohlasangiz Environment'da DEBUG=True/False deb majburlash mumkin.
 DEBUG = False
 
-ALLOWED_HOSTS = ['tuproqqalatumanmmtb.uz', 'www.tuproqqalatumanmmtb.uz', '192.168.1.39']
+ALLOWED_HOSTS = ['tuproqqalatumanmmtb.uz', 'www.tuproqqalatumanmmtb.uz', 'test.tuproqqalatumanmmtb.uz', '192.168.1.200', '127.0.0.1', 'localhost']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -128,8 +128,10 @@ MEDIA_ROOT = DATA_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Render HTTPS'ni proxy orqali beradi
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-if not DEBUG:
+USE_HTTPS = os.environ.get('USE_HTTPS') == '1'
+if USE_HTTPS:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True

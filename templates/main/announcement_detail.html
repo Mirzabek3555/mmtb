@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ announcement.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">E'lon</h1>
+        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="100">
+            <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'main:index' %}">Bosh sahifa</a></li>
+                <li class="breadcrumb-item active">E'lon</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section section-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="fade-up">
+                <div class="content-card p-4 p-md-5"
+                    style="border-radius:var(--radius-lg);box-shadow:0 10px 40px rgba(0,0,0,0.05);background:#fff;">
+                    <div class="d-flex align-items-center gap-3 mb-4" style="color:var(--text-muted);font-size:0.9rem;">
+                        <span><i class="far fa-calendar-alt me-2"></i>{{ announcement.created_at|date:"d-M Y" }}</span>
+                    </div>
+
+                    <h2 class="mb-4" style="color:var(--text-dark);font-weight:700;">{{ announcement.title }}</h2>
+
+                    <div class="announcement-content text-content">
+                        {{ announcement.content|safe }}
+                    </div>
+
+                    <div class="mt-5 pt-4" style="border-top:1px solid rgba(0,0,0,0.05);">
+                        <a href="{% url 'main:index' %}" class="btn-outline-custom">
+                            <i class="fas fa-arrow-left me-2"></i>Ortga qaytish
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
